@@ -1,7 +1,7 @@
 # async_worker
 
-## dependencies
-- kafka 
+## external dependencies
+- running kafka 
 - BROKER_URL environment variable
 
 ## how to run worker instance
