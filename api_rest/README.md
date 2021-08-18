@@ -2,5 +2,5 @@
 
 ## how to run api server
 ```
-uvicorn app:app
+uvicorn app:app --port 8000
 ```
