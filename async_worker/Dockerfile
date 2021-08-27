@@ -28,12 +28,10 @@ RUN poetry install --no-dev
 # IMAGE PRODUCTION
 FROM python-base as production
 ENV FASTAPI_ENV=production 
-RUN groupadd -r appuser && useradd -r -u 1001 appuser -g appuser
 COPY --from=builder-base $POETRY_HOME $POETRY_HOME
 COPY --from=builder-base $PYSETUP_PATH $PYSETUP_PATH
 WORKDIR /app
 COPY app.py ./
-#USER appuser
 EXPOSE 6066
 ENTRYPOINT [ "faust" ]
 CMD ["-A", "app", "worker", "-l", "info"] 
