@@ -1,0 +1,8 @@
+---
+version: '3'
+services:
+  async_worker:
+    build: .
+    container_name: async_worker
+    environment:
+      BROKER_URL: 'kafka://IP_KAFKA'
