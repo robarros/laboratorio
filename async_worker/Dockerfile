@@ -20,7 +20,6 @@ ENV PATH="$POETRY_HOME/bin:$VENV_PATH/bin:$PATH"
 FROM python-base as builder-base
 RUN apt-get update && apt-get install --no-install-recommends curl build-essential -y
 RUN curl -sSL https://raw.githubusercontent.com/python-poetry/poetry/master/get-poetry.py | python
-#RUN pip install -U faust
 WORKDIR $PYSETUP_PATH
 COPY poetry.lock pyproject.toml ./
 RUN poetry install --no-dev
@@ -32,6 +31,5 @@ COPY --from=builder-base $POETRY_HOME $POETRY_HOME
 COPY --from=builder-base $PYSETUP_PATH $PYSETUP_PATH
 WORKDIR /app
 COPY app.py ./
-EXPOSE 6066
 ENTRYPOINT [ "faust" ]
 CMD ["-A", "app", "worker", "-l", "info"] 

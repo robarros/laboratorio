@@ -8,7 +8,7 @@
 #
 # Usage: 
 #
-#  python python_kafka_test_client.py [bootstrap server]
+#  python3 python_kafka_test_client.py [bootstrap server]
 # 
 # Refs: 
 #  - https://docs.confluent.io/current/clients/python.html
