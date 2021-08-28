@@ -5,7 +5,7 @@ BROKER_URL = os.getenv('BROKER_URL', 'kafka://localhost')
 
 app = faust.App(
     'channel',
-    broker='kafka://localhost',
+    broker=BROKER_URL,
     store='memory://',
 )
 
