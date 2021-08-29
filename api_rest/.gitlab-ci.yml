@@ -4,6 +4,7 @@ stages:
   - build
   - deployment
 
+
 scan_code_api_rest:
   stage: scan
   variables:
@@ -21,7 +22,26 @@ scan_code_api_rest:
   only:
       - merge_requests
       - main
-      - dev
+      - develop
+
+
+get_last_tag_api_rest:
+  stage: build
+  image: bitnami/git:2.33.0
+  script:
+    - TAG=$(git describe --tags --abbrev=0)
+    - echo $TAG > tag.txt && cat tag.txt
+  artifacts:
+    paths:
+    - tag.txt
+    expire_in: 30 mins
+  only:
+    refs:
+      - main
+      - develop
+    changes:
+      - api_rest/**/*
+      - .gitlab-ci.yml
 
 
 build_and_push_to_repositories_api_rest:
