@@ -5,10 +5,10 @@
 replicaCount: 2
 
 image:
-  repository: api_rest
-  pullPolicy: IfNotPresent
+  repository: REPO_NAME
+  pullPolicy: Always
   # Overrides the image tag whose default is the chart appVersion.
-  tag: "0.1.0"
+  tag: "TAG"
 
 imagePullSecrets: []
 nameOverride: "api_rest"

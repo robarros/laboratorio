@@ -5,10 +5,10 @@
 replicaCount: 1
 
 image:
-  repository: async_worker
-  pullPolicy: IfNotPresent
+  repository: REPO_NAME
+  pullPolicy: Always
   # Overrides the image tag whose default is the chart appVersion.
-  tag: "0.1.0"
+  tag: "TAG"
 
 imagePullSecrets: []
 nameOverride: "async_worker"
