@@ -10,9 +10,9 @@ scan_vulnerabilities_api_rest:
   script:
     - npm install -g npm@latest
     - npm install -g snyk
-    - npm install snyk-to-html -g
     - cd ./api_rest
-    - snyk test
+    - snyk auth
+    - snyk test --file=app.py
   only:
     refs:
       - main
