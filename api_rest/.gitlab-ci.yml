@@ -6,13 +6,13 @@ stages:
 
 scan_vulnerabilities_api_rest:
   stage: scan
-  image: node:latest
+  image: snyk/snyk-cli:python-3
   script:
-    - npm install -g npm@latest
-    - npm install -g snyk
     - cd ./api_rest
-    - snyk auth
     - snyk test --file=app.py
+  only:
+    - main
+    - dev
   only:
     refs:
       - main
