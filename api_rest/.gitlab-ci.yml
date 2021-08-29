@@ -9,7 +9,8 @@ scan_vulnerabilities_api_rest:
   image: snyk/snyk-cli:python-3
   variables:
     SNYK_TOKEN: $SNYK_TOKEN
-    TARGET_FILE: ./api_rest/app.py
+    PROJECT_DIRECTORY: ./api_rest
+    TARGET_FILE: app.py
   script:
     - cd ./api_rest
     - snyk test
