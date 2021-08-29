@@ -7,8 +7,6 @@ stages:
 scan_vulnerabilities_api_rest:
   stage: scan
   image: node:13
-  variables:
-    SNYK_TOKEN: $SNYK_TOKEN
   script:
     - cd ./api_rest
     - npm install -g snyk snyk-to-html
