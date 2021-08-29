@@ -4,6 +4,7 @@ services:
   api_rest:
   kafka:
     build: .
+    container_name: api_rest
     networks: 
       - api_rest
     ports:

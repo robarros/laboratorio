@@ -15,11 +15,13 @@ ENV PYTHONUNBUFFERED=1 \
     VENV_PATH="/opt/pysetup/.venv"
 
 ENV PATH="$POETRY_HOME/bin:$VENV_PATH/bin:$PATH"
+COPY ../ssl/certificate.crt ./ssl/private.key /etc/ssl/
 
 # IMAGE BUILD
 FROM python-base as builder-base
 RUN apt-get update && apt-get install --no-install-recommends curl build-essential -y
-RUN curl -sSL https://raw.githubusercontent.com/python-poetry/poetry/master/get-poetry.py | python
+COPY get-poetry.py ./
+RUN python get-poetry.py
 WORKDIR $PYSETUP_PATH
 COPY poetry.lock pyproject.toml ./
 RUN poetry install --no-dev

@@ -4,5 +4,11 @@ services:
   async_worker:
     build: .
     container_name: async_worker
+    networks: 
+      - async_worker    
     environment:
-      BROKER_URL: 'kafka://IP_KAFKA'
+      BROKER_URL: 'kafka://IP_KAFKA:PORT'
+
+networks: 
+  async_worker:
+    driver: bridge  
