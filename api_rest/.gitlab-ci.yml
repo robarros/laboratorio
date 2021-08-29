@@ -7,12 +7,12 @@ stages:
 scan_vulnerabilities_api_rest:
   stage: scan
   image: snyk/snyk-cli:python-3
+  variables:
+    SNYK_TOKEN: $SNYK_TOKEN
+    TARGET_FILE: api_rest/app.py
   script:
     - cd ./api_rest
-    - snyk test --file=app.py
-  only:
-    - main
-    - dev
+    - snyk test
   only:
     refs:
       - main
