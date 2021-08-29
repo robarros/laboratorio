@@ -4,7 +4,6 @@ stages:
   - build
   - deployment
 
-
 scan_code_api_rest:
   stage: scan
   variables:
@@ -34,7 +33,7 @@ get_last_tag_api_rest:
   artifacts:
     paths:
     - tag.txt
-    expire_in: 30 mins
+    expire_in: 60 mins
   only:
     refs:
       - main
@@ -52,8 +51,11 @@ build_and_push_to_repositories_api_rest:
   variables:
     REPO_NAME: robarros
     IMAGE_NAME: api_rest
+  dependencies:
+    - get_last_tag_api_rest
   script:
-    - TAG=$(git describe --tags --abbrev=0)
+    - TAG=$(cat tag.txt)
+    - echo $TAG
     - cd ./api_rest
     - echo "{\"auths\":{\"https://index.docker.io/v1\":{\"auth\":\"$REGISTRY_PASSWORD\"}}}" > /kaniko/.docker/config.json
     - /kaniko/executor --context . --dockerfile ./Dockerfile --destination $REPO_NAME/$IMAGE_NAME:$TAG
@@ -65,6 +67,7 @@ build_and_push_to_repositories_api_rest:
       - api_rest/**/*
       - .gitlab-ci.yml
 
+
 deploy_to_development_environment_api_rest:
   stage: deployment
   image: alpine/k8s:1.21.2
@@ -75,8 +78,11 @@ deploy_to_development_environment_api_rest:
     REPO_NAME: robarros
     IMAGE_NAME: api_rest
     DEPLOY_NAME: api_rest
+  dependencies:
+    - build_and_push_to_repositories_api_rest
   script:
-    - TAG=$(git describe --tags --abbrev=0)
+    - TAG=$(cat tag.txt)
+    - echo $TAG
     - mkdir /root/.kube
     - echo "${KUBECONFIG}" | base64 -d | tee > /root/.kube/config
     - cd ./api_rest/chart
@@ -91,6 +97,7 @@ deploy_to_development_environment_api_rest:
       - api_rest/**/*
       - .gitlab-ci.yml
 
+
 deploy_to_production_environment_api_rest:
   stage: deployment
   image: alpine/k8s:1.21.2
@@ -101,8 +108,11 @@ deploy_to_production_environment_api_rest:
     REPO_NAME: robarros
     IMAGE_NAME: api_rest
     DEPLOY_NAME: api_rest
+  dependencies:
+    - deploy_to_development_environment_api_rest
   script:
-    - TAG=$(git describe --tags --abbrev=0)
+    - TAG=$(cat tag.txt)
+    - echo $TAG
     - mkdir /root/.kube
     - echo "${KUBECONFIG}" | base64 -d | tee > /root/.kube/config
     - cd ./api_rest/chart
