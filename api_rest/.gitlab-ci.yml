@@ -6,8 +6,11 @@ stages:
 
 scan vulnerabilities:
   stage: scan
-  image: snyk/snyk-cli:python-3
+  image: node:latest
   script:
+    - npm install -g npm@latest
+    - npm install -g snyk
+    - npm install snyk-to-html -g
     - cd ./api_rest
     - snyk test
   only:
