@@ -1,8 +1,5 @@
-stages:
-  - scan
-  - build
-  - deployment
+---
 include:
-  - '/api_rest/.gitlab-ci.yml'
-  - '/async_worker/.gitlab-ci.yml'
+  - local: '/api_rest/.gitlab-ci.yml'
+  - local: '/async_worker/.gitlab-ci.yml'
 

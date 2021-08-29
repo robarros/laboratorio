@@ -4,7 +4,7 @@ stages:
   - build
   - deployment
 
-scan vulnerabilities:
+scan_vulnerabilities_async_worker:
   stage: scan
   image: snyk/snyk-cli:python-3
   script:
@@ -18,25 +18,8 @@ scan vulnerabilities:
       - async_worker/**/*
       - .gitlab-ci.yml
 
-get last tag:
-  stage: build
-  script:
-    - TAG=$(git describe --tags --abbrev=0)
-    - echo $TAG > tag.txt
-    - cat tag.txt
-  artifacts:
-    paths:
-    - tag.txt
-    expire_in: 30 mins
-  only:
-    refs:
-      - main
-      - develop
-    changes:
-      - async_worker/**/*
-      - .gitlab-ci.yml
 
-build and push to repositories:
+build_and_push_to_repositories_async_worker:
   stage: build
   image:
     name: gcr.io/kaniko-project/executor:debug
@@ -45,10 +28,9 @@ build and push to repositories:
     REPO_NAME: robarros
     IMAGE_NAME: async_worker
   script:
-    - TAG=$(cat tag.txt)
-    - echo $TAG
+    - TAG=$(git describe --tags --abbrev=0)
     - cd ./async_worker
-    - echo "{\"auths\":{\"$CI_REGISTRY\":{\"auth\":\"$CI_REGISTRY_PASSWORD\"}}}" > /kaniko/.docker/config.json
+    - echo "{\"auths\":{\"https://index.docker.io/v1\":{\"auth\":\"$REGISTRY_PASSWORD\"}}}" > /kaniko/.docker/config.json
     - /kaniko/executor --context . --dockerfile ./Dockerfile --destination $REPO_NAME/$IMAGE_NAME:$TAG
   only:
     refs:
@@ -58,7 +40,7 @@ build and push to repositories:
       - async_worker/**/*
       - .gitlab-ci.yml
 
-deploy to development environment:
+deploy_to_development_environment_async_worker:
   stage: deployment
   image: alpine/k8s:1.21.2
   environment:
@@ -69,8 +51,7 @@ deploy to development environment:
     IMAGE_NAME: async_worker
     DEPLOY_NAME: async_worker
   script:
-    - TAG=$(cat tag.txt)
-    - echo $TAG
+    - TAG=$(git describe --tags --abbrev=0)
     - mkdir /root/.kube
     - echo "${KUBECONFIG}" | base64 -d | tee > /root/.kube/config
     - cd ./async_worker/chart
@@ -85,7 +66,7 @@ deploy to development environment:
       - async_worker/**/*
       - .gitlab-ci.yml
 
-deploy to production environment:
+deploy_to_production_environment_async_worker:
   stage: deployment
   image: alpine/k8s:1.21.2
   environment:
@@ -96,8 +77,7 @@ deploy to production environment:
     IMAGE_NAME: async_worker
     DEPLOY_NAME: async_worker
   script:
-    - TAG=$(cat tag.txt)
-    - echo $TAG
+    - TAG=$(git describe --tags --abbrev=0)
     - mkdir /root/.kube
     - echo "${KUBECONFIG}" | base64 -d | tee > /root/.kube/config
     - cd ./async_worker/chart
