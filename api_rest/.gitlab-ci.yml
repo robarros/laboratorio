@@ -29,11 +29,8 @@ get_last_tag_api_rest:
   image: bitnami/git:2.33.0
   script:
     - TAG=$(git describe --tags --abbrev=0)
-    - echo $TAG > tag.txt && cat tag.txt
-  artifacts:
-    paths:
-    - tag.txt
-    expire_in: 60 mins
+    - echo $TAG > tag.txt
+    - cat tag.txt
   only:
     refs:
       - main
