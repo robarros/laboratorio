@@ -6,14 +6,18 @@ stages:
 
 scan_vulnerabilities_api_rest:
   stage: scan
-  image: snyk/snyk-cli:python-3
+  image: node:13
   variables:
     SNYK_TOKEN: $SNYK_TOKEN
-    PROJECT_DIRECTORY: ./api_rest
-    TARGET_FILE: app.py
   script:
     - cd ./api_rest
-    - snyk test
+    - npm install -g snyk snyk-to-html
+    - snyk auth
+    - snyk test —json | snyk-to-html -o results.html
+  artifacts:
+    paths:
+    - results.html
+    expire_in: 60 mins
   only:
     refs:
       - main
